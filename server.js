@@ -18,7 +18,7 @@ app.use(bodyparser.urlencoded({ extended: false }))
 //app.use(express.json())
 //app.use(morgan("dev"));
 
-//const uri = 'mongodb+srv://imuhammadosama:comfortzone@comfort-zone-cluster-2o6ke.mongodb.net/comfortzone?retryWrites=true&w=majority';
+
 const uri = 'mongodb+srv://mrdbhere:MrDbhere@cluster0.5yux0cl.mongodb.net/?retryWrites=true&w=majority';
 const options = { useNewUrlParser: true, useUnifiedTopology: false };
 mongoose.connect(uri, options).then(() => { console.log("coneectes") }).catch(err => console.log("33333333", err))
@@ -86,6 +86,8 @@ app.post('/api/users/:id/exercises', (req, res, next) => {
 app.get('/api/users/:userId/logs', (req, res, next) => {
     let { from, to, limit } = req.query;
     let { userId } = req.params
+    back_btn = '<div><button onclick="history.back()">Go Back</button></div>'
+    // console.log(userId);
     from = moment(from, 'YYYY-MM-DD').isValid() ? moment(from, 'YYYY-MM-DD') : 0;
     to = moment(to, 'YYYY-MM-DD').isValid() ? moment(to, 'YYYY-MM-DD') : moment().add(1000000000000);
     User.findById(userId).then(user => {
@@ -97,11 +99,15 @@ app.get('/api/users/:userId/logs', (req, res, next) => {
                 _id: userId,
                 username: user.username,
                 count: log.length,
-                log: log.map(o => ({
-                    description: o.description,
-                    duration: o.duration,
-                    date: moment(o).format('ddd MMMM DD YYYY')
-                }))
+                back_btn: back_btn,
+                log: log.map(o => (
+                    {
+                        description: o.description,
+                        duration: o.duration,
+                        date: moment(o).format('ddd MMMM DD YYYY')
+
+                    }))
+
             }))
     })
         .catch(err => {
